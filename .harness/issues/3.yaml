@@ -3,6 +3,41 @@ id: 3
 title: 장바구니 & 주문
 status: active
 created_at: '2026-07-14T05:43:31.786Z'
-updated_at: '2026-07-14T06:02:18.429Z'
-runs: []
-files: []
+updated_at: '2026-07-14T20:55:51+09:00'
+runs:
+- run_id: 2026-07-14_issue-3_cart-order
+  workspace_dir: _workspace/2026-07-14_issue-3_cart-order
+  kind: initial
+  parent_run_id: null
+  at: '2026-07-14T20:40:43+09:00'
+files:
+- path: app/cart/page.tsx
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: app/orders/[id]/page.tsx
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: app/orders/page.tsx
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: app/restaurants/[id]/page.tsx
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: components/features/cart/add-to-cart-button.tsx
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: components/features/cart/cart-item-row.tsx
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: components/features/cart/cart-summary.tsx
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: components/features/orders/order-summary.tsx
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: components/features/restaurants/menu-item-row.tsx
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: components/features/restaurants/top-header.tsx
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: lib/db/client.test.ts
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: lib/db/client.ts
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: services/cart-service.ts
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: services/order-service.ts
+  first_run_id: 2026-07-14_issue-3_cart-order
+- path: services/restaurant-service.test.ts
+  first_run_id: 2026-07-14_issue-3_cart-order

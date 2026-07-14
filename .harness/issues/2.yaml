@@ -3,6 +3,37 @@ id: 2
 title: 음식점/메뉴 탐색
 status: active
 created_at: '2026-07-14T05:43:31.786Z'
-updated_at: '2026-07-14T06:02:17.461Z'
-runs: []
-files: []
+updated_at: '2026-07-14T20:55:51+09:00'
+runs:
+- run_id: 2026-07-14_issue-2_restaurants
+  workspace_dir: _workspace/2026-07-14_issue-2_restaurants
+  kind: initial
+  parent_run_id: null
+  at: '2026-07-14T15:53:18+09:00'
+files:
+- path: app/loading.tsx
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: app/page.tsx
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: app/restaurants/[id]/not-found.tsx
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: app/restaurants/[id]/page.tsx
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: components/features/restaurants/category-filter-chip.tsx
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: components/features/restaurants/menu-item-row.tsx
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: components/features/restaurants/price-tag.tsx
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: components/features/restaurants/restaurant-card.tsx
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: components/features/restaurants/top-header.tsx
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: lib/db/client.test.ts
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: lib/db/client.ts
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: services/restaurant-service.test.ts
+  first_run_id: 2026-07-14_issue-2_restaurants
+- path: services/restaurant-service.ts
+  first_run_id: 2026-07-14_issue-2_restaurants
