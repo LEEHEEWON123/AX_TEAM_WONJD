@@ -1,0 +1,7 @@
+
+# harness — 팀 패턴은 sync로 갱신, 로컬·이슈만 커밋
+.harness/*
+!.harness/patterns/
+.harness/patterns/team/
+!.harness/patterns/local/
+!.harness/issues/

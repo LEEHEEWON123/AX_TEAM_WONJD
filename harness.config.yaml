@@ -1,0 +1,31 @@
+# harness.config.yaml
+# 프로젝트별 하네스 설정. 비워두면 에이전트가 자동 감지한다.
+
+# ─── 스택 ─────────────────────────────────────────────────
+# auto: 프로젝트 파일(package.json, go.mod 등)로 자동 감지
+# 명시 가능한 값: next | react | vue | nuxt | express | nestjs |
+#                 fastapi | django | flask | go | flutter | android | ios
+stack: auto
+
+# ─── 테스트 ──────────────────────────────────────────────
+test_runner: auto     # vitest | jest | pytest | go-test | flutter-test | none | auto
+test_command: ""      # 커스텀 테스트 명령어. 비워두면 자동 감지.
+
+# ─── 스타일 ──────────────────────────────────────────────
+style_mode: auto      # tailwind | pure-css | hybrid | auto (프론트엔드 스택에서만 사용)
+
+# ─── 커밋 / 브랜치 ────────────────────────────────────────
+branch_prefix: feat   # feat | feature | dev
+commit_style: conventional  # conventional | simple
+
+# ─── Phase 2 구현 ─────────────────────────────────────────
+# cursor-agent: HANDOFF.md 작성 후 cursor-agent CLI 자동 실행 (기본)
+# claude:        Claude implementer 에이전트로 같은 세션에서 구현
+phase2: cursor-agent
+
+# team/ — team-patterns/ 중앙 레포 (install --sync-patterns로 갱신, 커밋 안 함)
+# local/ — ok+저장 시 pattern-extractor가 이 프로젝트에만 등록 (커밋함)
+patterns:
+  team_dir: .harness/patterns/team
+  local_dir: .harness/patterns/local
+  max_active_per_file: 30    # YAML 파일당 활성 패턴 상한 (observed 순 유지)
