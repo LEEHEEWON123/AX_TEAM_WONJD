@@ -1,3 +1,17 @@
+# Next.js
+node_modules/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+
+# env / secrets
+.env
+.env.local
+.env.*.local
+
+# local SQLite db
+data/*.db
+data/*.db-journal
 
 # harness — 팀 패턴은 sync로 갱신, 로컬·이슈만 커밋
 .harness/*

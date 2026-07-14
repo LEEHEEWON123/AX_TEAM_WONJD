@@ -1,0 +1,8 @@
+version: 1
+id: 5
+title: 주문 상태 조회
+status: active
+created_at: '2026-07-14T05:43:31.786Z'
+updated_at: '2026-07-14T06:02:20.267Z'
+runs: []
+files: []

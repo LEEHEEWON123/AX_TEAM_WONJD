@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+/* ─── 디자인 시스템 토큰 (프로젝트 확정, 신규 토큰 생성 금지) ─── */
+@theme {
+  /* Color */
+  --color-bg: #ffffff;
+  --color-surface: #f7f7f5;
+  --color-text: #1c1c1c;
+  --color-text-muted: #7a7a7a;
+  --color-border: #e7e5e1;
+  --color-primary: #ff5a1f;
+  --color-primary-text: #ffffff;
+  --color-accent: #00b383;
+  --color-warning: #ffb800;
+  --color-danger: #e5342a;
+
+  /* Font — Pretendard (로컬 폰트 파일 미제공 → 시스템 폴백 스택) */
+  --font-sans: "Pretendard", -apple-system, BlinkMacSystemFont, system-ui,
+    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+  /* Font size */
+  --text-xs: 0.75rem; /* 12 */
+  --text-sm: 0.875rem; /* 14 */
+  --text-md: 1rem; /* 16 */
+  --text-lg: 1.25rem; /* 20 */
+  --text-xl: 1.75rem; /* 28 */
+
+  /* Spacing */
+  --spacing-xs: 0.25rem; /* 4 */
+  --spacing-sm: 0.5rem; /* 8 */
+  --spacing-md: 1rem; /* 16 */
+  --spacing-lg: 1.5rem; /* 24 */
+  --spacing-xl: 2.5rem; /* 40 */
+
+  /* Radius */
+  --radius-sm: 0.25rem; /* 4 */
+  --radius-md: 0.5rem; /* 8 */
+  --radius-lg: 1rem; /* 16 */
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+}
