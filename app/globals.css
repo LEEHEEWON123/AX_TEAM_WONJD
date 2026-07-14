@@ -25,12 +25,11 @@
   --text-lg: 1.25rem; /* 20 */
   --text-xl: 1.75rem; /* 28 */
 
-  /* Spacing */
-  --spacing-xs: 0.25rem; /* 4 */
-  --spacing-sm: 0.5rem; /* 8 */
-  --spacing-md: 1rem; /* 16 */
-  --spacing-lg: 1.5rem; /* 24 */
-  --spacing-xl: 2.5rem; /* 40 */
+  /* Spacing — Tailwind 기본 spacing 스케일(0.25rem 단위)이 xs4/sm8/md16/lg24/xl40과
+     정확히 일치하므로 별도 spacing 토큰을 정의하지 않는다. 커스텀 named 키를 여기서
+     추가하면 Tailwind의 max-width, width, height 등 sizing 유틸리티가 이 값으로
+     충돌하여 덮어써진다 (예: spacing-md 정의 시 max-w-md가 28rem 대신 1rem이 됨).
+     spacing 유틸은 Tailwind 숫자 스케일을 그대로 쓴다: xs=1, sm=2, md=4, lg=6, xl=10. */
 
   /* Radius */
   --radius-sm: 0.25rem; /* 4 */

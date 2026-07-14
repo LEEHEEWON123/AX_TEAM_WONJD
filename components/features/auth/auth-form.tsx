@@ -36,7 +36,7 @@ const COPY = {
 
 const labelClass = 'text-sm font-medium text-text'
 const inputClass = cn(
-  'w-full rounded-md border border-border bg-bg px-md py-sm text-md text-text',
+  'w-full rounded-md border border-border bg-bg px-4 py-2 text-md text-text',
   'placeholder:text-text-muted',
   'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary'
 )
@@ -89,12 +89,12 @@ export function AuthForm({ mode }: AuthFormProps) {
   }
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-surface p-md">
-      <div className="w-full max-w-md rounded-lg border border-border bg-bg p-lg shadow-sm">
-        <h1 className="mb-lg text-xl font-bold text-text">{copy.title}</h1>
+    <main className="flex min-h-screen items-center justify-center bg-surface p-4">
+      <div className="w-full max-w-md rounded-lg border border-border bg-bg p-6 shadow-sm">
+        <h1 className="mb-6 text-xl font-bold text-text">{copy.title}</h1>
 
-        <form onSubmit={handleSubmit} className="flex flex-col gap-md" noValidate>
-          <div className="flex flex-col gap-xs">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
+          <div className="flex flex-col gap-1">
             <label htmlFor="email" className={labelClass}>
               이메일
             </label>
@@ -109,7 +109,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             {fieldErrors.email && <p className={errorTextClass}>{fieldErrors.email}</p>}
           </div>
 
-          <div className="flex flex-col gap-xs">
+          <div className="flex flex-col gap-1">
             <label htmlFor="password" className={labelClass}>
               비밀번호
             </label>
@@ -126,7 +126,7 @@ export function AuthForm({ mode }: AuthFormProps) {
 
           {mode === 'signup' && (
             <>
-              <div className="flex flex-col gap-xs">
+              <div className="flex flex-col gap-1">
                 <label htmlFor="passwordConfirm" className={labelClass}>
                   비밀번호 확인
                 </label>
@@ -143,7 +143,7 @@ export function AuthForm({ mode }: AuthFormProps) {
                 )}
               </div>
 
-              <div className="flex flex-col gap-xs">
+              <div className="flex flex-col gap-1">
                 <label htmlFor="nickname" className={labelClass}>
                   닉네임
                 </label>
@@ -166,7 +166,7 @@ export function AuthForm({ mode }: AuthFormProps) {
             type="submit"
             disabled={isPending}
             className={cn(
-              'mt-sm w-full rounded-md bg-primary px-md py-sm text-md font-medium text-primary-text',
+              'mt-2 w-full rounded-md bg-primary px-4 py-2 text-md font-medium text-primary-text',
               'transition-colors hover:bg-primary/90',
               'disabled:pointer-events-none disabled:opacity-50'
             )}
@@ -175,7 +175,7 @@ export function AuthForm({ mode }: AuthFormProps) {
           </button>
         </form>
 
-        <p className="mt-lg text-center text-sm text-text-muted">
+        <p className="mt-6 text-center text-sm text-text-muted">
           {copy.switchText}{' '}
           <Link href={copy.switchHref} className="font-medium text-primary underline">
             {copy.switchCta}

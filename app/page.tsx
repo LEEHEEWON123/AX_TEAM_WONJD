@@ -6,7 +6,7 @@ export default async function HomePage() {
   const session = await getSession()
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-md p-md text-center">
+    <main className="mx-auto flex min-h-screen max-w-md flex-col items-center justify-center gap-4 p-4 text-center">
       <h1 className="text-xl font-bold text-text">홈</h1>
       {session ? (
         <p className="text-md text-text-muted">

@@ -12,6 +12,8 @@ next-env.d.ts
 # local SQLite db
 data/*.db
 data/*.db-journal
+data/*.db-shm
+data/*.db-wal
 
 # harness — 팀 패턴은 sync로 갱신, 로컬·이슈만 커밋
 .harness/*
