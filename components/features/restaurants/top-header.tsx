@@ -44,9 +44,9 @@ export function TopHeader({ initialQuery = '', nickname, showSearch = true }: To
             <span aria-hidden className={iconButtonClass}>
               ♡
             </span>
-            <span aria-hidden className={iconButtonClass}>
+            <Link href="/cart" aria-label="장바구니" className={iconButtonClass}>
               🛒
-            </span>
+            </Link>
             {nickname ? (
               <span className="ml-2 text-sm text-text-muted">{nickname}님</span>
             ) : (

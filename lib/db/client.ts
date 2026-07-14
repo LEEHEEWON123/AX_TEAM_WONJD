@@ -44,6 +44,57 @@ const CREATE_MENU_ITEMS_INDEX = `
   CREATE INDEX IF NOT EXISTS idx_menu_items_restaurant ON menu_items(restaurant_id)
 `
 
+// issue #3: 장바구니 & 주문.
+// id 스킴: cart_items/orders/order_items PK는 restaurants·menu_items와 동일한 INTEGER AUTOINCREMENT.
+// 단 user_id는 users의 TEXT UUID (issue #2에서 확립된 의도적 불일치).
+const CREATE_CART_ITEMS_TABLE = `
+  CREATE TABLE IF NOT EXISTS cart_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL REFERENCES users(id),
+    menu_item_id INTEGER NOT NULL REFERENCES menu_items(id),
+    restaurant_id INTEGER NOT NULL REFERENCES restaurants(id),
+    quantity INTEGER NOT NULL DEFAULT 1,
+    created_at TEXT NOT NULL,
+    UNIQUE(user_id, menu_item_id)
+  )
+`
+
+const CREATE_CART_ITEMS_INDEX = `
+  CREATE INDEX IF NOT EXISTS idx_cart_items_user ON cart_items(user_id)
+`
+
+const CREATE_ORDERS_TABLE = `
+  CREATE TABLE IF NOT EXISTS orders (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL REFERENCES users(id),
+    restaurant_id INTEGER NOT NULL REFERENCES restaurants(id),
+    total_price INTEGER NOT NULL,
+    status TEXT NOT NULL DEFAULT 'pending',
+    created_at TEXT NOT NULL
+  )
+`
+
+const CREATE_ORDERS_INDEX = `
+  CREATE INDEX IF NOT EXISTS idx_orders_user ON orders(user_id)
+`
+
+// 가격/이름 스냅샷 — 이후 메뉴 변경과 무관하게 주문 내역 보존.
+const CREATE_ORDER_ITEMS_TABLE = `
+  CREATE TABLE IF NOT EXISTS order_items (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER NOT NULL REFERENCES orders(id),
+    menu_item_id INTEGER NOT NULL REFERENCES menu_items(id),
+    name TEXT NOT NULL,
+    price INTEGER NOT NULL,
+    quantity INTEGER NOT NULL,
+    created_at TEXT NOT NULL
+  )
+`
+
+const CREATE_ORDER_ITEMS_INDEX = `
+  CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id)
+`
+
 interface SeedRestaurant {
   name: string
   category: string
@@ -176,6 +227,12 @@ export function getDb(): Database.Database {
   db.exec(CREATE_RESTAURANTS_TABLE)
   db.exec(CREATE_MENU_ITEMS_TABLE)
   db.exec(CREATE_MENU_ITEMS_INDEX)
+  db.exec(CREATE_CART_ITEMS_TABLE)
+  db.exec(CREATE_CART_ITEMS_INDEX)
+  db.exec(CREATE_ORDERS_TABLE)
+  db.exec(CREATE_ORDERS_INDEX)
+  db.exec(CREATE_ORDER_ITEMS_TABLE)
+  db.exec(CREATE_ORDER_ITEMS_INDEX)
   seedRestaurants(db)
 
   return db

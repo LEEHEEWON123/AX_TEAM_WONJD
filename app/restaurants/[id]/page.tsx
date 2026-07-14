@@ -57,7 +57,7 @@ export default async function RestaurantDetailPage({ params }: RestaurantDetailP
           ) : (
             <ul className="flex flex-col">
               {restaurant.menu.map((item) => (
-                <MenuItemRow key={item.id} item={item} />
+                <MenuItemRow key={item.id} item={item} isAuthenticated={session != null} />
               ))}
             </ul>
           )}
