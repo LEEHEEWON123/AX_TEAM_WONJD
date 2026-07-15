@@ -3,6 +3,27 @@ id: 6
 title: 리뷰
 status: active
 created_at: '2026-07-14T05:43:31.786Z'
-updated_at: '2026-07-14T06:02:21.065Z'
-runs: []
-files: []
+updated_at: '2026-07-15T15:24:58+09:00'
+runs:
+- run_id: 2026-07-15_issue-6_review
+  workspace_dir: _workspace/2026-07-15_issue-6_review
+  kind: initial
+  parent_run_id: null
+  at: '2026-07-15T11:15:44+09:00'
+files:
+- path: app/orders/[id]/page.tsx
+  first_run_id: 2026-07-15_issue-6_review
+- path: app/restaurants/[id]/page.tsx
+  first_run_id: 2026-07-15_issue-6_review
+- path: components/features/reviews/review-card.tsx
+  first_run_id: 2026-07-15_issue-6_review
+- path: components/features/reviews/review-form.tsx
+  first_run_id: 2026-07-15_issue-6_review
+- path: components/features/reviews/star-rating.tsx
+  first_run_id: 2026-07-15_issue-6_review
+- path: lib/db/client.ts
+  first_run_id: 2026-07-15_issue-6_review
+- path: lib/validation/review-schema.ts
+  first_run_id: 2026-07-15_issue-6_review
+- path: services/review-service.ts
+  first_run_id: 2026-07-15_issue-6_review
