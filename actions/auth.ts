@@ -23,6 +23,7 @@ export async function signup(input: SignupInput): Promise<AuthResult> {
       userId: user.id,
       email: user.email,
       nickname: user.nickname,
+      role: user.role,
     })
     return { ok: true }
   } catch {
@@ -43,6 +44,7 @@ export async function login(input: LoginInput): Promise<AuthResult> {
       userId: user.id,
       email: user.email,
       nickname: user.nickname,
+      role: user.role,
     })
     return { ok: true }
   } catch {

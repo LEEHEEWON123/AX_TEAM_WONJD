@@ -13,7 +13,24 @@ export interface Restaurant {
   rating: number // 0.0~5.0, 저장된 집계값
   etaMin: number // 예상 소요시간(분) 하한
   etaMax: number // 예상 소요시간(분) 상한
+  ownerId: string | null // users.id (TEXT UUID) 참조. seed 음식점은 null(주인 없음).
   createdAt: string // ISO
+}
+
+// 사장님 메뉴 등록/수정 입력.
+export interface MenuItemInput {
+  name: string
+  description: string
+  price: number // 원(KRW) 양의 정수
+}
+
+// 사장님 음식점 생성 입력.
+export interface RestaurantInput {
+  name: string
+  category: FoodCategory
+  description: string
+  etaMin: number
+  etaMax: number
 }
 
 export interface MenuItem {

@@ -3,6 +3,7 @@ import type {
   FoodCategory,
   MenuItem,
   Restaurant,
+  RestaurantInput,
   RestaurantListQuery,
   RestaurantWithMenu,
 } from '@/types/restaurant'
@@ -16,6 +17,7 @@ interface RestaurantRow {
   rating: number
   eta_min: number
   eta_max: number
+  owner_id: string | null
   created_at: string
 }
 
@@ -38,6 +40,7 @@ function mapRestaurant(row: RestaurantRow): Restaurant {
     rating: row.rating,
     etaMin: row.eta_min,
     etaMax: row.eta_max,
+    ownerId: row.owner_id ?? null,
     createdAt: row.created_at,
   }
 }
@@ -102,5 +105,62 @@ export function getRestaurantWithMenu(id: number): RestaurantWithMenu | null {
   return {
     ...mapRestaurant(row),
     menu: menuRows.map(mapMenuItem),
+  }
+}
+
+/**
+ * 사장님이 소유한 음식점(1:1)을 메뉴와 함께 조회한다. 소유 음식점이 없으면 null.
+ * 소유권 스코프: owner_id = ? (기존 user_id 스코프 선례 준용).
+ */
+export function getRestaurantByOwner(ownerId: string): RestaurantWithMenu | null {
+  const db = getDb()
+
+  const row = db.prepare('SELECT * FROM restaurants WHERE owner_id = ?').get(ownerId) as
+    | RestaurantRow
+    | undefined
+  if (!row) return null
+
+  const menuRows = db
+    .prepare('SELECT * FROM menu_items WHERE restaurant_id = ? ORDER BY id ASC')
+    .all(row.id) as MenuItemRow[]
+
+  return {
+    ...mapRestaurant(row),
+    menu: menuRows.map(mapMenuItem),
+  }
+}
+
+/**
+ * 사장님 소유 음식점을 1개 생성한다(사장님 1명 : 음식점 1개).
+ * 이미 소유 음식점이 있으면 Error('RESTAURANT_EXISTS') throw. rating은 초기 0.
+ */
+export function createRestaurant(ownerId: string, input: RestaurantInput): Restaurant {
+  const db = getDb()
+
+  const existing = db.prepare('SELECT id FROM restaurants WHERE owner_id = ?').get(ownerId)
+  if (existing) {
+    throw new Error('RESTAURANT_EXISTS')
+  }
+
+  const now = new Date().toISOString()
+  const result = db
+    .prepare(
+      `INSERT INTO restaurants (name, category, description, rating, eta_min, eta_max, owner_id, created_at)
+       VALUES (?, ?, ?, 0, ?, ?, ?, ?)`
+    )
+    .run(input.name, input.category, input.description, input.etaMin, input.etaMax, ownerId, now)
+
+  const id = Number(result.lastInsertRowid)
+
+  return {
+    id,
+    name: input.name,
+    category: input.category,
+    description: input.description,
+    rating: 0,
+    etaMin: input.etaMin,
+    etaMax: input.etaMax,
+    ownerId,
+    createdAt: now,
   }
 }

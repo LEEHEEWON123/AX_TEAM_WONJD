@@ -24,12 +24,14 @@ const VALID_SIGNUP = {
   password: 'Password1!',
   passwordConfirm: 'Password1!',
   nickname: '닉네임',
+  role: 'customer' as const,
 }
 
 const MOCK_USER = {
   id: 'user-1',
   email: VALID_SIGNUP.email,
   nickname: VALID_SIGNUP.nickname,
+  role: 'customer' as const,
   createdAt: new Date().toISOString(),
 }
 

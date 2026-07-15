@@ -41,7 +41,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
 
   return (
     <div className="min-h-screen bg-bg">
-      <TopHeader initialQuery={q ?? ''} nickname={session?.nickname ?? null} />
+      <TopHeader
+        initialQuery={q ?? ''}
+        nickname={session?.nickname ?? null}
+        role={session?.role ?? null}
+      />
 
       <main className="mx-auto flex max-w-3xl flex-col gap-6 p-4">
         <div className="flex gap-2 overflow-x-auto pb-1">

@@ -1,6 +1,21 @@
-// MVP는 생성 시 'pending' 단일 상태. 상태 전이(조리/배달/완료)는 이번 이슈 범위 밖([확인 필요] #3).
-export const ORDER_STATUSES = ['pending'] as const
+// 주문 상태 셋. 전이 규칙: pending → cooking → completed (단방향).
+// 라벨: pending=접수, cooking=조리중, completed=완료. (cancelled는 이번 범위 밖.)
+export const ORDER_STATUSES = ['pending', 'cooking', 'completed'] as const
 export type OrderStatus = (typeof ORDER_STATUSES)[number]
+
+// 사장님 UI 표시용 상태 라벨.
+export const ORDER_STATUS_LABELS: Record<OrderStatus, string> = {
+  pending: '접수',
+  cooking: '조리중',
+  completed: '완료',
+}
+
+// 단방향 전이 다음 단계. completed는 종착(다음 없음).
+export const ORDER_STATUS_NEXT: Record<OrderStatus, OrderStatus | null> = {
+  pending: 'cooking',
+  cooking: 'completed',
+  completed: null,
+}
 
 export interface OrderItem {
   id: number

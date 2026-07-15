@@ -27,6 +27,7 @@ const SESSION: Session = {
   userId: 'user-1',
   email: 'user@example.com',
   nickname: '닉네임',
+  role: 'customer',
 }
 
 describe('createSessionToken / verifySessionToken', () => {

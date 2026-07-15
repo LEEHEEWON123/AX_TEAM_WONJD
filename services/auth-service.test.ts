@@ -20,6 +20,7 @@ function createTestDb() {
       email TEXT UNIQUE NOT NULL,
       password_hash TEXT NOT NULL,
       nickname TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'customer',
       created_at TEXT NOT NULL
     )
   `)
@@ -31,6 +32,7 @@ const SIGNUP_INPUT: SignupInput = {
   password: 'Password1!',
   passwordConfirm: 'Password1!',
   nickname: '닉네임',
+  role: 'customer',
 }
 
 describe('createUser', () => {

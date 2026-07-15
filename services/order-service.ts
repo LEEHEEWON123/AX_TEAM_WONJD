@@ -1,6 +1,7 @@
 import { getDb } from '@/lib/db/client'
 import { getCart } from '@/services/cart-service'
-import type { Order, OrderItem, OrderWithItems } from '@/types/order'
+import { ORDER_STATUS_NEXT } from '@/types/order'
+import type { Order, OrderItem, OrderStatus, OrderWithItems } from '@/types/order'
 
 // orders(snake_case) row. restaurant_name은 restaurants 조인으로 얻는다.
 interface OrderRow {
@@ -30,7 +31,7 @@ function mapOrder(row: OrderRow): Order {
     restaurantId: row.restaurant_id,
     restaurantName: row.restaurant_name,
     totalPrice: row.total_price,
-    status: 'pending',
+    status: row.status as OrderStatus,
     createdAt: row.created_at,
   }
 }
@@ -139,4 +140,56 @@ export function listOrders(userId: string): Order[] {
     .all(userId) as OrderRow[]
 
   return rows.map(mapOrder)
+}
+
+/**
+ * 특정 음식점으로 들어온 주문을 항목과 함께 최신순으로 조회한다(사장님 주문 관리).
+ * 호출 측(액션/페이지)에서 restaurantId가 사장님 소유인지 이미 검증한 뒤 사용한다.
+ */
+export function listOrdersByRestaurant(restaurantId: number): OrderWithItems[] {
+  const db = getDb()
+
+  const rows = db
+    .prepare(
+      `SELECT o.id, o.user_id, o.restaurant_id, r.name AS restaurant_name,
+              o.total_price, o.status, o.created_at
+       FROM orders o
+       JOIN restaurants r ON r.id = o.restaurant_id
+       WHERE o.restaurant_id = ?
+       ORDER BY o.id DESC`
+    )
+    .all(restaurantId) as OrderRow[]
+
+  const selectItems = db.prepare(
+    'SELECT * FROM order_items WHERE order_id = ? ORDER BY id ASC'
+  )
+
+  return rows.map((row) => ({
+    ...mapOrder(row),
+    items: (selectItems.all(row.id) as OrderItemRow[]).map(mapOrderItem),
+  }))
+}
+
+/**
+ * 주문 상태를 단방향(pending → cooking → completed)으로 전이한다.
+ * 소유권 스코프: ownerId 소유 음식점의 주문이 아니면 no-op(존재 노출 방지).
+ * next가 현재 상태의 정확한 다음 단계가 아니면 무시(역방향/건너뛰기/completed 재전이 차단).
+ */
+export function updateOrderStatus(ownerId: string, orderId: number, next: OrderStatus): void {
+  const db = getDb()
+
+  const row = db
+    .prepare(
+      `SELECT o.status
+       FROM orders o
+       WHERE o.id = ?
+         AND o.restaurant_id IN (SELECT id FROM restaurants WHERE owner_id = ?)`
+    )
+    .get(orderId, ownerId) as { status: string } | undefined
+  if (!row) return
+
+  const current = row.status as OrderStatus
+  if (ORDER_STATUS_NEXT[current] !== next) return
+
+  db.prepare('UPDATE orders SET status = ? WHERE id = ?').run(next, orderId)
 }

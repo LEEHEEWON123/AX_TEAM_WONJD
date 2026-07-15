@@ -10,6 +10,7 @@ const CREATE_USERS_TABLE = `
     email TEXT UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
     nickname TEXT NOT NULL,
+    role TEXT NOT NULL DEFAULT 'customer',
     created_at TEXT NOT NULL
   )
 `
@@ -25,9 +26,36 @@ const CREATE_RESTAURANTS_TABLE = `
     rating REAL NOT NULL DEFAULT 0,
     eta_min INTEGER NOT NULL,
     eta_max INTEGER NOT NULL,
+    owner_id TEXT REFERENCES users(id),
     created_at TEXT NOT NULL
   )
 `
+
+/**
+ * issue #4: 기존 data/app.db에는 users.role / restaurants.owner_id 컬럼이 없다.
+ * CREATE TABLE IF NOT EXISTS는 기존 테이블에 컬럼을 추가하지 않으므로,
+ * PRAGMA table_info로 존재 여부를 확인한 뒤 없을 때만 ALTER ADD COLUMN을 실행한다(멱등).
+ */
+function ensureColumn(
+  database: Database.Database,
+  table: string,
+  column: string,
+  ddl: string
+): void {
+  const columns = database.prepare(`PRAGMA table_info(${table})`).all() as Array<{
+    name: string
+  }>
+  const exists = columns.some((c) => c.name === column)
+  if (!exists) {
+    database.exec(`ALTER TABLE ${table} ADD COLUMN ${ddl}`)
+  }
+}
+
+/** issue #4 신규 컬럼을 멱등 추가한다. 이미 존재하면 no-op. */
+function migrateSellerColumns(database: Database.Database): void {
+  ensureColumn(database, 'users', 'role', "role TEXT NOT NULL DEFAULT 'customer'")
+  ensureColumn(database, 'restaurants', 'owner_id', 'owner_id TEXT REFERENCES users(id)')
+}
 
 const CREATE_MENU_ITEMS_TABLE = `
   CREATE TABLE IF NOT EXISTS menu_items (
@@ -233,6 +261,7 @@ export function getDb(): Database.Database {
   db.exec(CREATE_ORDERS_INDEX)
   db.exec(CREATE_ORDER_ITEMS_TABLE)
   db.exec(CREATE_ORDER_ITEMS_INDEX)
+  migrateSellerColumns(db)
   seedRestaurants(db)
 
   return db

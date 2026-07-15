@@ -122,26 +122,26 @@ describe('listRestaurants', () => {
     const query: RestaurantListQuery = { category: '한식' }
     const result = listRestaurants(query)
     expect(result).toHaveLength(1)
-    expect(result[0].name).toBe('성수족발 본점')
-    expect(result[0].category).toBe('한식')
+    expect(result[0]!.name).toBe('성수족발 본점')
+    expect(result[0]!.category).toBe('한식')
   })
 
   it('음식점 이름에 검색어가 포함되면 결과에 포함된다', () => {
     const result = listRestaurants({ q: '황금' })
     expect(result).toHaveLength(1)
-    expect(result[0].name).toBe('황금분식')
+    expect(result[0]!.name).toBe('황금분식')
   })
 
   it('음식점 이름은 일치하지 않아도 메뉴명에 검색어가 포함되면 결과에 포함된다', () => {
     const result = listRestaurants({ q: '막국수' })
     expect(result).toHaveLength(1)
-    expect(result[0].name).toBe('성수족발 본점')
+    expect(result[0]!.name).toBe('성수족발 본점')
   })
 
   it('category와 q를 함께 지정하면 두 조건을 모두 만족하는 음식점만 반환한다', () => {
     const result = listRestaurants({ category: '한식', q: '족발' })
     expect(result).toHaveLength(1)
-    expect(result[0].name).toBe('성수족발 본점')
+    expect(result[0]!.name).toBe('성수족발 본점')
   })
 
   it('검색어와 일치하는 음식점/메뉴가 없으면 빈 배열을 반환한다', () => {
@@ -151,12 +151,12 @@ describe('listRestaurants', () => {
 
   it('반환된 Restaurant는 camelCase 필드(etaMin/etaMax/createdAt)로 매핑되어 있다', () => {
     const result = listRestaurants({ category: '치킨' })
-    expect(result[0]).toMatchObject({
+    expect(result[0]!).toMatchObject({
       name: '청년치킨 강남점',
       etaMin: 25,
       etaMax: 35,
     })
-    expect(result[0].createdAt).toBeDefined()
+    expect(result[0]!.createdAt).toBeDefined()
   })
 })
 

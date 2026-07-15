@@ -26,7 +26,7 @@ export default async function RestaurantDetailPage({ params }: RestaurantDetailP
 
   return (
     <div className="min-h-screen bg-bg">
-      <TopHeader nickname={session?.nickname ?? null} showSearch={false} />
+      <TopHeader nickname={session?.nickname ?? null} role={session?.role ?? null} showSearch={false} />
 
       <main className="mx-auto flex max-w-3xl flex-col gap-6 p-4">
         <div className="flex aspect-[16/9] items-center justify-center rounded-lg bg-gradient-to-br from-surface to-border text-5xl">

@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { login, signup } from '@/actions/auth'
-import type { SignupInput } from '@/types/user'
+import { USER_ROLES } from '@/types/user'
+import type { SignupInput, UserRole } from '@/types/user'
 
 type AuthMode = 'login' | 'signup'
 
@@ -34,6 +35,12 @@ const COPY = {
   },
 } as const
 
+// 가입 유형(손님/사장님) 라디오 옵션. 기본 선택은 첫 항목(customer).
+const ROLE_OPTIONS: { value: UserRole; label: string }[] = [
+  { value: 'customer', label: '손님' },
+  { value: 'owner', label: '사장님' },
+]
+
 const labelClass = 'text-sm font-medium text-text'
 const inputClass = cn(
   'w-full rounded-md border border-border bg-bg px-4 py-2 text-md text-text',
@@ -61,11 +68,16 @@ export function AuthForm({ mode }: AuthFormProps) {
 
     startTransition(async () => {
       if (mode === 'signup') {
+        const roleValue = String(formData.get('role') ?? 'customer')
+        const role: UserRole = (USER_ROLES as readonly string[]).includes(roleValue)
+          ? (roleValue as UserRole)
+          : 'customer'
         const result = await signup({
           email,
           password,
           passwordConfirm: String(formData.get('passwordConfirm') ?? ''),
           nickname: String(formData.get('nickname') ?? ''),
+          role,
         })
         if (result.ok) {
           router.push('/')
@@ -157,6 +169,31 @@ export function AuthForm({ mode }: AuthFormProps) {
                 />
                 {fieldErrors.nickname && <p className={errorTextClass}>{fieldErrors.nickname}</p>}
               </div>
+
+              <fieldset className="flex flex-col gap-1">
+                <legend className={cn(labelClass, 'mb-1')}>가입 유형</legend>
+                <div className="grid grid-cols-2 gap-2">
+                  {ROLE_OPTIONS.map((option, index) => (
+                    <label
+                      key={option.value}
+                      className={cn(
+                        'flex cursor-pointer items-center gap-2 rounded-md border border-border bg-bg px-4 py-2 text-md text-text',
+                        'has-[:checked]:border-primary has-[:checked]:text-primary',
+                        'focus-within:ring-2 focus-within:ring-primary'
+                      )}
+                    >
+                      <input
+                        type="radio"
+                        name="role"
+                        value={option.value}
+                        defaultChecked={index === 0}
+                        className="accent-primary"
+                      />
+                      {option.label}
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
             </>
           )}
 

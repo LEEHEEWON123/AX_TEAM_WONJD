@@ -1,6 +1,7 @@
 import { cookies } from 'next/headers'
 import { SignJWT, jwtVerify } from 'jose'
-import type { Session } from '@/types/user'
+import type { Session, UserRole } from '@/types/user'
+import { USER_ROLES } from '@/types/user'
 
 const COOKIE_NAME = 'session'
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 7 // 7 days
@@ -21,6 +22,7 @@ export async function createSessionToken(session: Session): Promise<string> {
     userId: session.userId,
     email: session.email,
     nickname: session.nickname,
+    role: session.role,
   })
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
@@ -32,7 +34,7 @@ export async function createSessionToken(session: Session): Promise<string> {
 export async function verifySessionToken(token: string): Promise<Session | null> {
   try {
     const { payload } = await jwtVerify(token, getSecretKey())
-    const { userId, email, nickname } = payload
+    const { userId, email, nickname, role } = payload
 
     if (
       typeof userId !== 'string' ||
@@ -42,7 +44,13 @@ export async function verifySessionToken(token: string): Promise<Session | null>
       return null
     }
 
-    return { userId, email, nickname }
+    // 기존 발급 토큰은 role 필드가 없다 → 누락/비정상 값이면 'customer'로 폴백(재로그인 불필요).
+    const safeRole: UserRole =
+      typeof role === 'string' && (USER_ROLES as readonly string[]).includes(role)
+        ? (role as UserRole)
+        : 'customer'
+
+    return { userId, email, nickname, role: safeRole }
   } catch {
     return null
   }

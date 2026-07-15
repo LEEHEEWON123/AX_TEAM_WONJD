@@ -6,6 +6,7 @@ const VALID_SIGNUP = {
   password: 'Password1!',
   passwordConfirm: 'Password1!',
   nickname: '닉네임',
+  role: 'customer',
 }
 
 describe('signupSchema', () => {
