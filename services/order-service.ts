@@ -170,6 +170,74 @@ export function listOrdersByRestaurant(restaurantId: number): OrderWithItems[] {
   }))
 }
 
+/** 재주문 결과. addedCount는 장바구니에 담은 메뉴 수(distinct), unavailableItemNames는 판매 종료로 제외된 이름들. */
+export interface ReorderResult {
+  restaurantId: number
+  addedCount: number
+  unavailableItemNames: string[] // 더 이상 판매하지 않아(메뉴 삭제) 담지 못한 항목 이름
+}
+
+/**
+ * 과거 주문과 동일한 메뉴로 장바구니를 다시 채운다("이 음식점으로 새로 담기").
+ * 소유권: getOrder 재사용으로만 검증 — null이면 그대로 null 반환(존재 노출 방지).
+ * 삭제된 메뉴(menu_items에 없는 menuItemId)는 제외하고 이름만 unavailableItemNames에 수집한다.
+ * 담을 항목이 하나도 없으면 장바구니를 건드리지 않는다.
+ * 가격은 cart_items에 저장하지 않고 getCart의 menu_items 조인으로 최신값을 쓰므로 스냅샷 가격은 재사용하지 않는다.
+ * 담을 항목이 있으면 단일 음식점 제약에 따라 기존 장바구니를 비우고 현재 quantity로 교체 삽입한다.
+ */
+export function reorder(userId: string, orderId: number): ReorderResult | null {
+  const db = getDb()
+
+  const order = getOrder(userId, orderId)
+  if (!order) return null
+
+  const selectMenu = db.prepare('SELECT id, restaurant_id FROM menu_items WHERE id = ?')
+
+  const available: { menuItemId: number; restaurantId: number; quantity: number }[] = []
+  const unavailableItemNames: string[] = []
+
+  for (const item of order.items) {
+    const menu = selectMenu.get(item.menuItemId) as
+      | { id: number; restaurant_id: number }
+      | undefined
+    if (menu) {
+      available.push({
+        menuItemId: menu.id,
+        restaurantId: menu.restaurant_id,
+        quantity: item.quantity,
+      })
+    } else {
+      unavailableItemNames.push(item.name)
+    }
+  }
+
+  if (available.length === 0) {
+    return { restaurantId: order.restaurantId, addedCount: 0, unavailableItemNames }
+  }
+
+  const now = new Date().toISOString()
+  const clearCart = db.prepare('DELETE FROM cart_items WHERE user_id = ?')
+  const insertItem = db.prepare(
+    `INSERT INTO cart_items (user_id, menu_item_id, restaurant_id, quantity, created_at)
+     VALUES (?, ?, ?, ?, ?)
+     ON CONFLICT(user_id, menu_item_id) DO UPDATE SET quantity = quantity + excluded.quantity`
+  )
+
+  const runTransaction = db.transaction(() => {
+    clearCart.run(userId)
+    for (const it of available) {
+      insertItem.run(userId, it.menuItemId, it.restaurantId, it.quantity, now)
+    }
+  })
+  runTransaction()
+
+  return {
+    restaurantId: order.restaurantId,
+    addedCount: available.length,
+    unavailableItemNames,
+  }
+}
+
 /**
  * 주문 상태를 단방향(pending → cooking → completed)으로 전이한다.
  * 소유권 스코프: ownerId 소유 음식점의 주문이 아니면 no-op(존재 노출 방지).

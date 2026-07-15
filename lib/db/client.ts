@@ -123,6 +123,42 @@ const CREATE_ORDER_ITEMS_INDEX = `
   CREATE INDEX IF NOT EXISTS idx_order_items_order ON order_items(order_id)
 `
 
+// issue #6: 리뷰. 주문당 1리뷰(UNIQUE(order_id))로 중복을 DB 레벨에서 차단.
+// restaurant_id는 주문 row에서 파생 저장(음식점 스코프 조회용, 클라 입력 신뢰 금지).
+// 신규 테이블이므로 ALTER 불필요 — CREATE IF NOT EXISTS만으로 기존 data/app.db에도 멱등 생성.
+const CREATE_REVIEWS_TABLE = `
+  CREATE TABLE IF NOT EXISTS reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    order_id INTEGER NOT NULL UNIQUE REFERENCES orders(id),
+    user_id TEXT NOT NULL REFERENCES users(id),
+    restaurant_id INTEGER NOT NULL REFERENCES restaurants(id),
+    rating INTEGER NOT NULL,
+    comment TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL
+  )
+`
+
+const CREATE_REVIEWS_INDEX = `
+  CREATE INDEX IF NOT EXISTS idx_reviews_restaurant ON reviews(restaurant_id)
+`
+
+// issue #7: 찜(즐겨찾기). UNIQUE(user_id, restaurant_id)로 중복 찜을 DB 레벨에서 차단.
+// toggle은 "존재하면 delete, 없으면 insert"로 구현(better-sqlite3 동기 처리, 원자성 불필요).
+// 신규 테이블이므로 ALTER 불필요 — CREATE IF NOT EXISTS만으로 기존 data/app.db에도 멱등 생성.
+const CREATE_FAVORITES_TABLE = `
+  CREATE TABLE IF NOT EXISTS favorites (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id TEXT NOT NULL REFERENCES users(id),
+    restaurant_id INTEGER NOT NULL REFERENCES restaurants(id),
+    created_at TEXT NOT NULL,
+    UNIQUE(user_id, restaurant_id)
+  )
+`
+
+const CREATE_FAVORITES_INDEX = `
+  CREATE INDEX IF NOT EXISTS idx_favorites_user ON favorites(user_id)
+`
+
 interface SeedRestaurant {
   name: string
   category: string
@@ -261,6 +297,10 @@ export function getDb(): Database.Database {
   db.exec(CREATE_ORDERS_INDEX)
   db.exec(CREATE_ORDER_ITEMS_TABLE)
   db.exec(CREATE_ORDER_ITEMS_INDEX)
+  db.exec(CREATE_REVIEWS_TABLE)
+  db.exec(CREATE_REVIEWS_INDEX)
+  db.exec(CREATE_FAVORITES_TABLE)
+  db.exec(CREATE_FAVORITES_INDEX)
   migrateSellerColumns(db)
   seedRestaurants(db)
 

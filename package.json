@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "start:all": "npm run start:all --prefix ../harness_build"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

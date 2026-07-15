@@ -45,16 +45,27 @@ export function TopHeader({
           </Link>
 
           <div className="flex items-center gap-1">
-            {/* 알림/찜/장바구니 — 이번 이슈에서는 비기능 placeholder */}
+            {/* 알림 — 비기능 placeholder */}
             <span aria-hidden className={iconButtonClass}>
               🔔
             </span>
-            <span aria-hidden className={iconButtonClass}>
-              ♡
-            </span>
+            {nickname ? (
+              <Link href="/favorites" aria-label="찜한 음식점" className={iconButtonClass}>
+                ♡
+              </Link>
+            ) : (
+              <span aria-hidden className={iconButtonClass}>
+                ♡
+              </span>
+            )}
             <Link href="/cart" aria-label="장바구니" className={iconButtonClass}>
               🛒
             </Link>
+            {nickname && (
+              <Link href="/orders" aria-label="내 주문" className={iconButtonClass}>
+                📋
+              </Link>
+            )}
             {role === 'owner' && (
               <Link
                 href="/seller"

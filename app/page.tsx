@@ -1,4 +1,5 @@
 import { getSession } from '@/lib/auth/session'
+import { getFavoritedRestaurantIds } from '@/services/favorite-service'
 import { listRestaurants } from '@/services/restaurant-service'
 import {
   FOOD_CATEGORIES,
@@ -39,6 +40,14 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const session = await getSession()
   const restaurants = listRestaurants({ category, q })
 
+  // 로그인 사용자면 목록의 찜 여부를 한 번에 조회(N+1 방지). 비로그인은 항상 빈 Set.
+  const favoritedIds = session
+    ? getFavoritedRestaurantIds(
+        session.userId,
+        restaurants.map((restaurant) => restaurant.id)
+      )
+    : new Set<number>()
+
   return (
     <div className="min-h-screen bg-bg">
       <TopHeader
@@ -69,7 +78,11 @@ export default async function HomePage({ searchParams }: HomePageProps) {
           <ul className="grid grid-cols-2 gap-4">
             {restaurants.map((restaurant) => (
               <li key={restaurant.id}>
-                <RestaurantCard restaurant={restaurant} />
+                <RestaurantCard
+                  restaurant={restaurant}
+                  isAuthenticated={session != null}
+                  initialFavorited={favoritedIds.has(restaurant.id)}
+                />
               </li>
             ))}
           </ul>
