@@ -3,6 +3,59 @@ id: 4
 title: 사장님 메뉴/주문 관리
 status: active
 created_at: '2026-07-14T05:43:31.786Z'
-updated_at: '2026-07-14T06:02:19.251Z'
-runs: []
-files: []
+updated_at: '2026-07-15T09:54:45+09:00'
+runs:
+- run_id: 2026-07-14_issue-4_seller-management
+  workspace_dir: _workspace/2026-07-14_issue-4_seller-management
+  kind: initial
+  parent_run_id: null
+  at: '2026-07-14T20:59:52+09:00'
+files:
+- path: app/page.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: app/restaurants/[id]/page.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: app/seller/menu/page.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: app/seller/orders/page.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: app/seller/page.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: components/features/auth/auth-form.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: components/features/restaurants/top-header.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: components/features/seller/create-restaurant-form.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: components/features/seller/menu-item-form.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: components/features/seller/menu-manager.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: components/features/seller/seller-order-card.tsx
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: lib/auth/guard.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: lib/auth/session.test.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: lib/auth/session.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: lib/db/client.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: lib/validation/auth-schema.test.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: lib/validation/auth-schema.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: lib/validation/menu-schema.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: services/auth-service.test.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: services/auth-service.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: services/menu-service.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: services/order-service.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: services/restaurant-service.test.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
+- path: services/restaurant-service.ts
+  first_run_id: 2026-07-14_issue-4_seller-management
