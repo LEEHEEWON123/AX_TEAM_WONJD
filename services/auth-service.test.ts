@@ -10,7 +10,7 @@ vi.mock('@/lib/db/client', () => ({
   getDb: () => testDb,
 }))
 
-import { createUser, authenticateUser } from '@/services/auth-service'
+import { createUser, authenticateUser, findOrCreateSsoUser } from '@/services/auth-service'
 
 function createTestDb() {
   const db = new Database(':memory:')
@@ -108,5 +108,45 @@ describe('authenticateUser', () => {
     expect(nonexistentError).toBeDefined()
     expect(wrongPasswordError).toBeDefined()
     expect(nonexistentError?.message).toBe(wrongPasswordError?.message)
+  })
+})
+
+describe('findOrCreateSsoUser', () => {
+  beforeEach(() => {
+    testDb = createTestDb()
+  })
+
+  it('기존 이메일이 있으면 같은 계정을 재사용한다', async () => {
+    const created = await createUser(SIGNUP_INPUT)
+    const user = await findOrCreateSsoUser({
+      email: SIGNUP_INPUT.email,
+      nickname: '새 닉네임',
+    })
+
+    expect(user.id).toBe(created.id)
+    expect(user.email).toBe(created.email)
+    expect(user.nickname).toBe(created.nickname)
+  })
+
+  it('기존 계정이 없으면 SSO 전용 로컬 계정을 생성한다', async () => {
+    const user = await findOrCreateSsoUser({
+      email: 'staff@wonjd.com',
+      nickname: '직원',
+    })
+
+    const row = testDb
+      .prepare('SELECT email, password_hash, nickname, role FROM users WHERE email = ?')
+      .get('staff@wonjd.com') as {
+      email: string
+      password_hash: string
+      nickname: string
+      role: string
+    }
+
+    expect(user.email).toBe('staff@wonjd.com')
+    expect(row.email).toBe('staff@wonjd.com')
+    expect(row.nickname).toBe('직원')
+    expect(row.role).toBe('customer')
+    expect(row.password_hash).toBeTruthy()
   })
 })

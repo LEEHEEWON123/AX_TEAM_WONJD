@@ -1,3 +1,4 @@
+import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth/session'
 import { getFavoritedRestaurantIds } from '@/services/favorite-service'
 import { listRestaurants } from '@/services/restaurant-service'
@@ -36,8 +37,10 @@ export default async function HomePage({ searchParams }: HomePageProps) {
   const category = parseCategory(firstParam(params.category))
   const q = firstParam(params.q)?.trim() || undefined
 
-  // 탐색은 공개(A안). 로그인 사용자면 헤더에 닉네임, 아니면 로그인 CTA 노출.
   const session = await getSession()
+  if (!session) {
+    redirect('/login')
+  }
   const restaurants = listRestaurants({ category, q })
 
   // 로그인 사용자면 목록의 찜 여부를 한 번에 조회(N+1 방지). 비로그인은 항상 빈 Set.

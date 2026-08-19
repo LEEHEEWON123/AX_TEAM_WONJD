@@ -7,11 +7,13 @@ import { cn } from '@/lib/utils'
 import { login, signup } from '@/actions/auth'
 import { USER_ROLES } from '@/types/user'
 import type { SignupInput, UserRole } from '@/types/user'
+import { CompanySsoButton } from './company-sso-button'
 
 type AuthMode = 'login' | 'signup'
 
 interface AuthFormProps {
   mode: AuthMode
+  companyOnly?: boolean
 }
 
 type FieldErrors = Partial<Record<keyof SignupInput, string>>
@@ -49,7 +51,7 @@ const inputClass = cn(
 )
 const errorTextClass = 'text-sm text-danger'
 
-export function AuthForm({ mode }: AuthFormProps) {
+export function AuthForm({ mode, companyOnly = false }: AuthFormProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
@@ -100,10 +102,35 @@ export function AuthForm({ mode }: AuthFormProps) {
     })
   }
 
+  if (mode === 'login' && companyOnly) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-surface p-4">
+        <div className="w-full max-w-md rounded-lg border border-border bg-bg p-6 shadow-sm">
+          <h1 className="mb-3 text-xl font-bold text-text">회사 GitHub 로그인</h1>
+          <p className="mb-6 text-sm text-text-muted">
+            `@wonjd.com` GitHub 회사 계정으로만 접속할 수 있습니다.
+          </p>
+          <CompanySsoButton />
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-surface p-4">
       <div className="w-full max-w-md rounded-lg border border-border bg-bg p-6 shadow-sm">
         <h1 className="mb-6 text-xl font-bold text-text">{copy.title}</h1>
+
+        {mode === 'login' && (
+          <>
+            <CompanySsoButton />
+            <div className="my-6 flex items-center gap-3 text-sm text-text-muted">
+              <div className="h-px flex-1 bg-border" />
+              <span>또는</span>
+              <div className="h-px flex-1 bg-border" />
+            </div>
+          </>
+        )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4" noValidate>
           <div className="flex flex-col gap-1">

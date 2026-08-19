@@ -1,5 +1,4 @@
 import { redirect } from 'next/navigation'
-import { AuthForm } from '@/components/features/auth/auth-form'
 import { getSession } from '@/lib/auth/session'
 
 export default async function SignupPage() {
@@ -8,5 +7,5 @@ export default async function SignupPage() {
     redirect('/')
   }
 
-  return <AuthForm mode="signup" />
+  redirect('/login')
 }

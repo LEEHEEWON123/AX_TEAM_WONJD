@@ -8,9 +8,13 @@
     "start": "next start",
     "test": "vitest run",
     "test:watch": "vitest",
-    "start:all": "npm run start:all --prefix ../harness_build"
+    "start:all": "npm run start:all --prefix ../harness_build",
+    "supabase:functions:serve": "npx supabase functions serve server-secrets --env-file supabase/functions/.env.local",
+    "supabase:functions:deploy": "npx supabase functions deploy server-secrets",
+    "supabase:functions:logs": "npx supabase functions logs server-secrets"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.109.0",
     "bcryptjs": "^2.4.3",
     "better-sqlite3": "^11.8.1",
     "clsx": "^2.1.1",

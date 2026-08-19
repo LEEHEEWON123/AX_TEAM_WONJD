@@ -2,15 +2,16 @@ import { cookies } from 'next/headers'
 import { SignJWT, jwtVerify } from 'jose'
 import type { Session, UserRole } from '@/types/user'
 import { USER_ROLES } from '@/types/user'
+import { getServerSecretSync } from '@/lib/security/server-secrets'
 
 const COOKIE_NAME = 'session'
 const MAX_AGE_SECONDS = 60 * 60 * 24 * 7 // 7 days
 
 function getSecretKey(): Uint8Array {
-  const secret = process.env.AUTH_SECRET
+  const secret = getServerSecretSync('AUTH_SECRET')
   if (!secret || secret.length < 32) {
     throw new Error(
-      'AUTH_SECRET 환경변수가 설정되지 않았거나 32자 미만입니다. .env.local에 32자 이상의 랜덤 값을 설정하세요.'
+      'AUTH_SECRET가 설정되지 않았거나 32자 미만입니다. 서버 env에 32자 이상의 랜덤 값을 넣으세요.'
     )
   }
   return new TextEncoder().encode(secret)

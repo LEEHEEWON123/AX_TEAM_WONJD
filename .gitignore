@@ -21,3 +21,4 @@ data/*.db-wal
 .harness/patterns/team/
 !.harness/patterns/local/
 !.harness/issues/
+.vercel
